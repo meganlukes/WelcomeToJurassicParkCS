@@ -15,7 +15,7 @@ namespace WelcomeToJurassicParkCS
         {
             Console.WriteLine($"{Name} was received {WhenAcquired}");
             Console.WriteLine($"{Name} is a {DietType}");
-            Console.WriteLine("Speaking of which you should probably adjust the feed schedule since it now weights {Weight}kg.");
+            Console.WriteLine($"Speaking of which you should probably adjust the feed schedule since it now weights {Weight} kg.");
             Console.WriteLine($"Assuming it hasn't escaped yet, {Name} should be in Enclosure {EnclosureNumber}");
             Console.WriteLine("I call all the dinosaurs 'it' because shockingly enough, we didn't cover sexing dinosaurs at business school.");
         }
@@ -34,6 +34,7 @@ namespace WelcomeToJurassicParkCS
 
         static string PromptForString(string prompt)
         {
+            Console.Write(prompt);
             var userInput = Console.ReadLine();
             return userInput;
         }
@@ -56,18 +57,18 @@ namespace WelcomeToJurassicParkCS
 
         static void View(List<Dinosaur> dinoList)
         {
-            var listLength = dinoList.Count;
+            int listLength = dinoList.Count();
             if (listLength == 0)
             {
                 Console.WriteLine("We don't have any dinosaurs yet. Go take it up with the lab.");
             }
             else
             {
-                var dinoByDateList = dinoList.OrderBy(dino => dino.Name);
+                var dinoByDateList = dinoList.OrderBy(dino => dino.WhenAcquired);
                 Console.WriteLine("In the order that they were acquired, our current inventory is composed of:");
-                for (int i = 0; i < listLength; i++)
+                foreach (Dinosaur dino in dinoByDateList)
                 {
-                    Console.WriteLine("dinoByDateList.Name[i]");
+                    Console.WriteLine(dino.Name);
                 }
             }
         }
@@ -77,13 +78,13 @@ namespace WelcomeToJurassicParkCS
             var newDino = new Dinosaur();
             newDino.Name = PromptForString("What is the dinosaur's name?");
             Console.WriteLine("Is it an Herbivore or a Carnivore?    ");
-            var inputtedDiet = Console.ReadLine();
-            while (inputtedDiet != "Carnivore" && inputtedDiet != "Herbivore")
+            var DietType = Console.ReadLine();
+            while (DietType != "Carnivore" && DietType != "Herbivore")
             {
                 Console.WriteLine("Sorry, the database doesn't have that as an option. Is it an Herbivore or a Carnivore?   ");
-                inputtedDiet = Console.ReadLine();
+                DietType = Console.ReadLine();
             }
-            newDino.DietType = inputtedDiet;
+            newDino.DietType = DietType;
             newDino.Weight = PromptForInteger("How much does it weigh in kilograms?(Please type a whole number)   ");
             newDino.EnclosureNumber = PromptForInteger("What is the new dinosaur's enclosure number?   ");
             dinoList.Add(newDino);
@@ -97,7 +98,7 @@ namespace WelcomeToJurassicParkCS
 
             if (dinoToDelete == null)
             {
-                Console.WriteLine("There's nothing named {dino} on our inventory list.");
+                Console.WriteLine($"There's nothing named {dino} on our inventory list.");
             }
             else
             {
@@ -109,8 +110,7 @@ namespace WelcomeToJurassicParkCS
 
         static List<Dinosaur> Transfer(List<Dinosaur> dinoList)
         {
-            string tempDinoName;
-            tempDinoName = PromptForString("What is the name of the dinosaur you would like to transfer?");
+            string tempDinoName = PromptForString("What is the name of the dinosaur you would like to transfer?");
             var isThisDinoHere = dinoList.Any(aDinoName => aDinoName.Name == tempDinoName);
             while (isThisDinoHere == false)
             {
@@ -126,8 +126,8 @@ namespace WelcomeToJurassicParkCS
 
         static void Summary(List<Dinosaur> dinoList)
         {
-            var numberOfCarnivores = dinoList.Count(dino => dino.DietType == "carnivore");
-            var numberOfHerbivores = dinoList.Count(dino => dino.DietType == "herbivore");
+            var numberOfCarnivores = dinoList.Count(dino => dino.DietType == "Carnivore");
+            var numberOfHerbivores = dinoList.Count(dino => dino.DietType == "Herbivore");
             Console.WriteLine($"We currently have {numberOfCarnivores} carnivores and {numberOfHerbivores} herbivores.");
         }
 
@@ -135,10 +135,10 @@ namespace WelcomeToJurassicParkCS
         {
             var dinosaurInventory = new List<Dinosaur>();
             Greeting();
-            var keepAnnoyingMe = true;
-            while (keepAnnoyingMe)
+            var keepAnnoyingMe = "true";
+            while (keepAnnoyingMe == "true")
             {
-                Console.WriteLine("Would you like to (V)iew the list of dinosaurs in the order that they were aqcuired, (A)dd a new dinosaur to the inventory, (R)emove a dinosaur from the inventory, (T)ransfer a dinosaur to a different enclosure, (S)ee a list of our carnivores and herbivores, or (G)o find something else to do?");
+                Console.WriteLine("Would you like to (V)iew the list of dinosaurs in the order that they were acquired, (A)dd a new dinosaur to the inventory, (R)emove a dinosaur from the inventory, (T)ransfer a dinosaur to a different enclosure, (S)ee a list of our carnivores and herbivores, or (G)o find something else to do?");
                 var selection = Console.ReadLine().ToUpper();
                 if (selection == "V")
                 {
@@ -156,28 +156,11 @@ namespace WelcomeToJurassicParkCS
                 {
                     Summary(dinosaurInventory);
                 }
-                else
+                else if (selection == "G")
                 {
-                    keepAnnoyingMe = false;
+                    keepAnnoyingMe = "false";
                 }
-
             }
-
-
-
-
-
-            /*var defaultDino = new Dinosaur();
-            defaultDino.Name = "Chicken";
-            defaultDino.Weight = 5;
-            defaultDino.DietType = "Herbivore";
-            defaultDino.EnclosureNumber = 1;
-
-            defaultDino.Description(); */
-
-
-
         }
     }
-
 }
